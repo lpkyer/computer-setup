@@ -38,6 +38,11 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# ─── Cache sudo (nécessaire pour Homebrew installer) ────────
+info "Authentification requise pour l'installation..."
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done 2>/dev/null &
+
 # ─── Début ───────────────────────────────────────────────────
 echo "  Lancement de l'installation Gorditos..."
 echo "  Log : $LOG_FILE"
