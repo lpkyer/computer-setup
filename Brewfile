@@ -1,0 +1,11 @@
+cask "google-chrome"
+cask "google-drive"
+cask "microsoft-office"
+cask "adobe-acrobat-pro"
+cask "slack"
+cask "zoom"
+cask "spotify"
+cask "rectangle"
+
+brew "dockutil"
+brew "wget"
