@@ -125,14 +125,56 @@ ok "Applications installées"
 # ─── Étape 4 : Configuration macOS ──────────────────────────
 step "Configuration macOS"
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-if [[ -f "$SCRIPT_DIR/macos.sh" ]]; then
-  # shellcheck source=macos.sh
-  source "$SCRIPT_DIR/macos.sh"
-  ok "Préférences système appliquées"
-else
-  warn "macos.sh introuvable — configuration système ignorée"
-fi
+info "Finder"
+defaults write com.apple.finder ShowPathbar -bool true
+defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.finder ShowTabView -bool true
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write com.apple.finder FXPreferredViewStyle -string "clmv"
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+ok "Finder configuré"
+
+info "Dock"
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0.4
+defaults write com.apple.dock tilesize -int 48
+defaults write com.apple.dock minimize-to-application -bool true
+defaults write com.apple.dock show-recents -bool false
+ok "Dock configuré"
+
+info "Trackpad"
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+ok "Trackpad configuré"
+
+info "Clavier"
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+ok "Clavier configuré"
+
+info "Captures d'écran"
+SCREENSHOTS_DIR="$HOME/Desktop/Captures"
+mkdir -p "$SCREENSHOTS_DIR"
+defaults write com.apple.screencapture location -string "$SCREENSHOTS_DIR"
+defaults write com.apple.screencapture type -string "png"
+defaults write com.apple.screencapture disable-shadow -bool true
+ok "Captures d'écran configurées"
+
+info "Barre de menus"
+defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+defaults write NSGlobalDomain AppleICUForce24HourTime -bool true
+ok "Barre de menus configurée"
+
+info "Redémarrage des services..."
+killall Finder Dock SystemUIServer 2>/dev/null || true
+ok "Préférences système appliquées"
 
 # ─── Étape 5 : Dock ─────────────────────────────────────────
 step "Barre d'applications (Dock)"
