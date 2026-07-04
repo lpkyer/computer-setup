@@ -11,7 +11,6 @@ echo "
 
 # ─── Configuration ───────────────────────────────────────────
 LOG_FILE="$HOME/.gorditos-setup.log"
-BREWFILE="$(cd "$(dirname "$0")" && pwd)/Brewfile"
 
 # ─── Logging ─────────────────────────────────────────────────
 info()  { printf "\e[34m[INFO]\e[0m  %s\n" "$*" | tee -a "$LOG_FILE"; }
@@ -87,13 +86,40 @@ ok "Homebrew à jour"
 # ─── Étape 3 : Applications ─────────────────────────────────
 step "Applications"
 
-if [[ ! -f "$BREWFILE" ]]; then
-  error "Brewfile introuvable : $BREWFILE"
-  exit 1
-fi
-
 info "Installation des applications (cette étape peut prendre du temps)..."
-brew bundle --file="$BREWFILE" --no-lock 2>&1 | tee -a "$LOG_FILE" || true
+
+install_cask() {
+  local name="$1"
+  if brew list --cask "$name" &>/dev/null 2>&1; then
+    ok "$name déjà installé"
+  else
+    info "Installation de $name..."
+    brew install --cask "$name" 2>&1 | tee -a "$LOG_FILE" || true
+  fi
+}
+
+install_formula() {
+  local name="$1"
+  if brew list "$name" &>/dev/null 2>&1; then
+    ok "$name déjà installé"
+  else
+    info "Installation de $name..."
+    brew install "$name" 2>&1 | tee -a "$LOG_FILE" || true
+  fi
+}
+
+install_cask "google-chrome"
+install_cask "google-drive"
+install_cask "microsoft-office"
+install_cask "adobe-acrobat-pro"
+install_cask "slack"
+install_cask "zoom"
+install_cask "spotify"
+install_cask "rectangle"
+
+install_formula "dockutil"
+install_formula "wget"
+
 ok "Applications installées"
 
 # ─── Étape 4 : Configuration macOS ──────────────────────────
