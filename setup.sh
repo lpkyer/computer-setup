@@ -9,7 +9,7 @@ echo "
 "
 
 # ─── Configuration ───────────────────────────────────────────
-LOG_FILE="$HOME/.gorditos-setup.log"
+LOG_FILE="$HOME/.lpkyer-script-setup.log"
 
 # ─── Logging ─────────────────────────────────────────────────
 info()  { printf "\e[34m[INFO]\e[0m  %s\n" "$*" | tee -a "$LOG_FILE"; }
